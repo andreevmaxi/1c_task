@@ -139,8 +139,10 @@ bool update_file(FILE*& ans,
                  std::vector<char>& symbols){
     unsigned long printed = 0;
     for(int i = 0; i < symbols.size(); ++i) {
-        fwrite(&old_data[printed], sizeof(char), poss[i] - printed, ans);
-        printed += i;
+        if(poss[i] - printed > 0) {
+            fwrite(&old_data[printed], sizeof(char), poss[i] - printed, ans);\
+            printed += (poss[i] - printed);
+        }
         if(opers[i] == 'd') {
             ++printed;
         } else if(opers[i] == 'i') {
@@ -220,7 +222,7 @@ bool menu(){
         }
 
         calculate_diff(ans, old_data, new_data);
-
+        fclose(ans);
         return 1;
     }
 
@@ -253,7 +255,7 @@ bool menu(){
         }
 
         update_file(ans, old_data, operations, positions, new_symbols);
-
+        fclose(ans);
         return 1;
     }
 
